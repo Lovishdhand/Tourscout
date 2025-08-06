@@ -1,0 +1,15 @@
+.footerdiv {
+    /* background-color: red; */
+    height: 30vh;
+    width: 88vw;         
+    display: flex;         
+    justify-content: center;
+    align-items: flex-start;
+      flex-direction: column;
+    color: white;         
+    font-size: 20px;
+
+    
+}
+
+

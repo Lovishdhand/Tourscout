@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, createContext, useContext, useEffect } from "react";
 
 import "./App.css";
 import Header from "./Components/Header";
@@ -6,82 +6,114 @@ import Footer from "./Components/Footer";
 import Corousel from "./Components/Corousel";
 import Album from "./Components/Album";
 import UserCard from "./Components/UserCard";
+import Modal from "./Components/Modal";
+
+export const UserContext = createContext();
 
 function App() {
-  const [count, setCount] = useState(0);
+  // alert(useContext);
+  const [openModal, setOpenModal] = useState(false);
+  // console.log(openModal);
+  const [userdetails, setUserDetails] = useState([]);
+  const[selectedUser,setSelectedUser]=useState({
+    
+  });
+  useEffect(() => {
+    async function fetchuserdetails() {
+      try {
+        let response = await fetch(
+          `https://jsonplaceholder.typicode.com/users`
+        );
+        // console.log(response);
 
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+        }
+
+        let data = await response.json();
+        // console.log(data);
+
+        setUserDetails(data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchuserdetails();
+  }, []);
+useEffect(()=>{
+  console.log(userdetails.slice(0,5));
+})
   return (
     <>
-      <Header />
-
-      {/* <div style={{ height: '960vh', backgroundColor: '' }}> */}
-      <div style={{ height: "200vh", backgroundColor: "orange" }}>
-        <Corousel />
-        <div
-          style={{
-            backgroundColor: "brown",
-            height: "70vh",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-around",
-              backgroundColor: "blue",
-              height: "30vh",
-            }}
-          >
-            <Album />
-            <Album />
-            <Album />
-            <Album />
-          </div>
+      <UserContext.Provider value={setOpenModal}>
+        <Header />
+        {openModal && <Modal />}
+        {/* <div style={{ height: '960vh', backgroundColor: '' }}> */}
+        <div style={{ height: "200vh", backgroundColor: "orange" }}>
+          <Corousel />
 
           <div
             style={{
-              backgroundColor: "yellow",
-              height: "35vh",
-              width: "44vw",
-              display: "flex",
-             flexDirection: "column"
-
+              backgroundColor: "brown",
+              height: "70vh",
             }}
           >
             <div
               style={{
-                backgroundColor: "purple",
-                height: "15vh",
-                width: "44vw",
                 display: "flex",
-                justifyContent: "space-evenly",
+                justifyContent: "space-around",
+                backgroundColor: "blue",
+                height: "30vh",
               }}
             >
-              <UserCard />
-              <UserCard />
-              <UserCard />
-              <UserCard />
-              <UserCard />
+              <Album />
+              <Album />
+              <Album />
+              <Album />
             </div>
+
             <div
               style={{
-                backgroundColor: "purple",
-                height: "15vh",
+                backgroundColor: "yellow",
+                height: "35vh",
                 width: "44vw",
                 display: "flex",
-                justifyContent: "space-evenly",
+                flexDirection: "column",
               }}
             >
-              <UserCard />
-              <UserCard />
-              <UserCard />
-              <UserCard />
-              <UserCard />
+              {userdetails.map((_,index) => {
+
+                if (index % 5 !== 0) {
+                return null ;
+                }
+                return  <div
+                  key={index}
+                    style={{
+                      backgroundColor: "purple",
+                      height: "20vh",
+                      width: "50vw",
+                      display: "flex",
+                      justifyContent: "space-evenly",
+                    }}
+                  >
+                    {userdetails.slice(index,index+5).map((user) => (
+                      <UserCard
+                        key={user.id}
+                        user={user}
+                   
+                      />
+                    ))}
+                  </div>;
+              
+              })}
+
+             
             </div>
           </div>
         </div>
-      </div>
 
-      <Footer />
+        <Footer />
+      </UserContext.Provider>
     </>
   );
 }

@@ -15,9 +15,8 @@ function App() {
   const [openModal, setOpenModal] = useState(false);
   // console.log(openModal);
   const [userdetails, setUserDetails] = useState([]);
-  const[selectedUser,setSelectedUser]=useState({
-    
-  });
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [albums, setAlbums] = useState([]);
   useEffect(() => {
     async function fetchuserdetails() {
       try {
@@ -39,17 +38,49 @@ function App() {
       }
     }
     fetchuserdetails();
+
+    async function fetchalbums() {
+      try {
+        let response = await fetch(
+          `https://jsonplaceholder.typicode.com/albums`
+        );
+        // console.log(response);
+
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+        }
+
+        let data = await response.json();
+        // console.log(data);
+
+        setAlbums(data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchalbums();
   }, []);
-useEffect(()=>{
-  console.log(userdetails.slice(0,5));
-})
+  useEffect(() => {
+    console.log(albums.slice(0, 100));
+  });
+    const filteredAlbums = selectedUser
+    ? albums.filter(album => album.userId === selectedUser.id).slice(0, 4)
+    : [];
   return (
     <>
-      <UserContext.Provider value={setOpenModal}>
+      <UserContext.Provider
+        value={{ setOpenModal, selectedUser, setSelectedUser }}
+      >
         <Header />
         {openModal && <Modal />}
         {/* <div style={{ height: '960vh', backgroundColor: '' }}> */}
-        <div style={{ height: "200vh", filter: openModal && "blur(10px)", backgroundColor: "orange" }}>
+        <div
+          style={{
+            height: "200vh",
+            filter: openModal && "blur(10px)",
+            backgroundColor: "orange",
+          }}
+        >
           <Corousel />
 
           <div
@@ -66,10 +97,16 @@ useEffect(()=>{
                 height: "30vh",
               }}
             >
+             {(selectedUser 
+  ? albums.filter(album => album.userId === selectedUser.id) 
+  : albums.slice(0, 4) 
+).slice(0,4).map((albumdetails) => (
+    <Album key={albumdetails.id} album={albumdetails} />
+))}
+              {/* <Album />
               <Album />
               <Album />
-              <Album />
-              <Album />
+              <Album /> */}
             </div>
 
             <div
@@ -81,13 +118,13 @@ useEffect(()=>{
                 flexDirection: "column",
               }}
             >
-              {userdetails.map((_,index) => {
-
+              {userdetails.map((_, index) => {
                 if (index % 5 !== 0) {
-                return null ;
+                  return null;
                 }
-                return  <div
-                  key={index}
+                return (
+                  <div
+                    key={index}
                     style={{
                       backgroundColor: "purple",
                       height: "20vh",
@@ -96,18 +133,12 @@ useEffect(()=>{
                       justifyContent: "space-evenly",
                     }}
                   >
-                    {userdetails.slice(index,index+5).map((user) => (
-                      <UserCard
-                        key={user.id}
-                        user={user}
-                   
-                      />
+                    {userdetails.slice(index, index + 5).map((user) => (
+                      <UserCard key={user.id} user={user} />
                     ))}
-                  </div>;
-              
+                  </div>
+                );
               })}
-
-             
             </div>
           </div>
         </div>

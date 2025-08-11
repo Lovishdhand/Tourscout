@@ -49,7 +49,7 @@ useEffect(()=>{
         <Header />
         {openModal && <Modal />}
         {/* <div style={{ height: '960vh', backgroundColor: '' }}> */}
-        <div style={{ height: "200vh", backgroundColor: "orange" }}>
+        <div style={{ height: "200vh", filter: openModal && "blur(10px)", backgroundColor: "orange" }}>
           <Corousel />
 
           <div

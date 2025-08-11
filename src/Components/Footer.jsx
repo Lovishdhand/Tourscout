@@ -1,5 +1,5 @@
 import "../Footer.css";
-import { PiCopyrightThin } from "react-icons/pi";
+
 
 function Footer() {
   return (

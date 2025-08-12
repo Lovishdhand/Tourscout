@@ -17,6 +17,8 @@ function App() {
   const [userdetails, setUserDetails] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [albums, setAlbums] = useState([]);
+  const [selectedalbum, setSelectedAlbum] = useState([]);
+  const [photos,setPhotos]=useState([]);
   useEffect(() => {
     async function fetchuserdetails() {
       try {
@@ -59,17 +61,39 @@ function App() {
       }
     }
     fetchalbums();
+     async function fetchphotos() {
+      try {
+        let response = await fetch(
+          `https://jsonplaceholder.typicode.com/photos`
+        );
+        // console.log(response);
+
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+        }
+
+        let data = await response.json();
+        // console.log(data);
+
+        setPhotos(data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchphotos();
   }, []);
   useEffect(() => {
-    console.log(albums.slice(0, 100));
+    // console.log(albums.slice(0, 100));
   });
     const filteredAlbums = selectedUser
     ? albums.filter(album => album.userId === selectedUser.id).slice(0, 4)
     : [];
+    const filteredPhotos=selectedalbum ? photos.filter(photo=>photo.albumId === selectedalbum.id) :[];
+    console.log(filteredPhotos);
   return (
     <>
       <UserContext.Provider
-        value={{ setOpenModal, selectedUser, setSelectedUser }}
+        value={{ setOpenModal, selectedUser, setSelectedUser,setSelectedAlbum,selectedalbum,filteredPhotos }}
       >
         <Header />
         {openModal && <Modal />}

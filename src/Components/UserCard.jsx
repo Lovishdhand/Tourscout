@@ -12,18 +12,27 @@ function UserCard({user}) {
     <div
       style={{
         backgroundColor: "green",
-        height: "14vh",
-        width: "7vw",
+        height: "130px",
+        width: "120px",
         marginTop: "10px",
+         
       }}
       onClick={() => {
-      setOpenModal(true);
+      // setOpenModal(true);
         // alert(user.name)
       setSelectedUser(user);
       }}
     >
       <FaUser style={{ color: "white", marginTop: "10px" }} />
       <p>{user.name}</p>
+      <div style={{backgroundColor:"",height:""}}>
+         <button style={{}} onClick={() => {
+      setOpenModal(true);
+        // alert(user.name)
+      // setSelectedUser(user);
+      }} >Show Details</button>
+      </div>
+     
     </div>
   );
 }

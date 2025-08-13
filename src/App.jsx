@@ -19,6 +19,7 @@ function App() {
   const [albums, setAlbums] = useState([]);
   const [selectedalbum, setSelectedAlbum] = useState([]);
   const [photos,setPhotos]=useState([]);
+   const[highlight,setHighlight]=useState(null);
   useEffect(() => {
     async function fetchuserdetails() {
       try {
@@ -93,7 +94,7 @@ function App() {
   return (
     <>
       <UserContext.Provider
-        value={{ setOpenModal, selectedUser, setSelectedUser,setSelectedAlbum,selectedalbum,filteredPhotos }}
+        value={{ setOpenModal, selectedUser, setSelectedUser,setSelectedAlbum,selectedalbum,filteredPhotos,highlight,setHighlight }}
       >
         <Header />
         {openModal && <Modal />}

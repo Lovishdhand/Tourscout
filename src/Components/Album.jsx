@@ -5,8 +5,9 @@ import { UserContext } from "../App";
 
 function Album({album}){
     const { setOpenModal, selectedUser, setSelectedUser,setSelectedAlbum,selectedalbum } = useContext(UserContext);
+    const isHighlighted = selectedalbum?.id === album.id;
 return(
-<div style={{backgroundColor:"red", height:"20vh",width:"20vw",marginTop:"20px",fontSize:"10px"}}
+<div style={{backgroundColor:"red", height:"20vh",width:"20vw",marginTop:"20px",fontSize:"10px", boxShadow:isHighlighted ? "0 0 0 10px rgba(255, 238, 238, 0.5)" :""}}
 onClick={()=>{
     // alert(album.id)
     setSelectedAlbum(album);

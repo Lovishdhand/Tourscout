@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id     Int     @id @default(autoincrement())
+  name   String
+  albums Album[]
+}
+
+model Album {
+  id      Int     @id @default(autoincrement())
+  title   String
+  user_id Int
+  user    User    @relation(fields: [user_id], references: [id])
+  photos  Photo[]
+}
+
+model Photo {
+  id        Int    @id @default(autoincrement())
+  album_id  Int
+   caption   String? 
+  url       String
+  thumbnail String
+  album     Album  @relation(fields: [album_id], references: [id])
+}

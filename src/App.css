@@ -9,6 +9,10 @@
   height: 100vh
 }
 
+Link {
+  text-decoration: none;
+}
+
 /* .logo {
   height: 6em;
   padding: 1.5em;

@@ -17,14 +17,17 @@ return(
  <img src="/images/ontourlogo (1).svg" alt="Tour Scout Logo" height={"50vh"}/>
 
 </div>
-<nav style={{backgroundColor:"orange",width:"70%",}}>
+<nav style={{backgroundColor:"orange",width:"80%",}}>
       <ul style={{display:"flex",listStyle: "none",justifyContent:"space-evenly",textDecoration:"none"}}>
         <li>
-          <Link to="/">Home</Link>
+          <Link to="/admin/dashboard">Home</Link>
+        </li>
+        <li>
+          <Link to="/admin/adduser">Adduser</Link>
         </li>
        
         <li>
-          <Link to="/userlist">Userlist</Link>
+          <Link to="/admin/userlist">Userlist</Link>
         </li>
      
         <li>

@@ -5,6 +5,6 @@ export const useUsers = () => {
   return useQuery({
     queryKey: ["users"],   
     queryFn: fetchUsers,   
-    staleTime: 1000 * 60,  
+    staleTime:  1000 * 20,  
   });
 };

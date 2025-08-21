@@ -12,5 +12,10 @@ export const addUser = async (newUser) => {
 };
 
 export const editUser=async(editUser) =>{
-  const {} = await axios.post(`${import.meta.meta.env.VITE_API_URL}/editUser`,editUser);
+  const {data} = await axios.put(`${import.meta.env.VITE_API_URL}/editUser`,editUser);
+  return data;
+};
+export const deleteUser=async(deleteUser) =>{
+  const {data} = await axios.delete(`${import.meta.env.VITE_API_URL}/deleteuser`,{  data: deleteUser } );
+  return data;
 };

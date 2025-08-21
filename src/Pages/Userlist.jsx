@@ -1,18 +1,40 @@
 import { data } from "react-router-dom";
 import { useUsers } from "../hooks/useUsers";
 import { useEditUser } from "../hooks/useEdituser";
+import { useDeleteUser } from "../hooks/useDeleteUser";
 import { FaEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Button from "../AdminComponents/Button";
+import Swal from "sweetalert2";
 function Userlist() {
   const { data: users, isLoading, isError } = useUsers();
   const { mutate, isPending: isEditPending, isError: isEditError } = useEditUser();
+  const { mutateAsync,isPending: isDeletePending, isError: isDeleteError } = useDeleteUser();
+ const handleDelete = async (id) => {
+  console.log(id);
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won’t be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    });
 
+    if (result.isConfirmed) {
+      try {
+        await deleteUser.mutateAsync(id); 
+        Swal.fire("Deleted!", "User has been deleted.", "success");
+      } catch (error) {
+        Swal.fire("Error!", "Something went wrong.", "error");
+      }
+    }
+  };
   const [openModal, setopenModal] = useState(false);
-  const[editUser,seteditUser]=useState({id:0,name:""});
+
   console.log(users);
     const validationSchema = Yup.object({
       name: Yup.string().required("Name is required"),
@@ -57,14 +79,17 @@ function Userlist() {
                       style={{ color: "blue" }}
                       onClick={() => {
                         setopenModal(!openModal);
-                        seteditUser({id:user.id,name:user.name})
-                      //  alert(editUser.id)4
-                      // console.log(editUser);
+             
                       }}
                     />
                   </td>
                   <td>
-                    <MdDelete style={{ color: "red" }} />
+                    <MdDelete style={{ color: "red" }}
+                    onClick={()=>{
+handleDelete(user.id)
+                    }}
+                    
+                    />
                   </td>
                 </tr>
               ))}
@@ -104,8 +129,8 @@ function Userlist() {
 
               <Button text={ "Edit User"} color="orange" />
               <ErrorMessage name="name" component="div" style={{color:"red"}} />
-               {/* {isError && <div style={{ color: "red" }}>Error adding user</div>}
-          {isSuccess && <div style={{ color: "green" }}>User added!</div>} */}
+               {isError && <div style={{ color: "red" }}>Error adding user</div>}
+          {isSuccess && <div style={{ color: "green" }}>User added!</div>}
             </Form>
           )}
         </Formik>

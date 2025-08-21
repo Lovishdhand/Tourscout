@@ -3,11 +3,12 @@ import Button from "../AdminComponents/Button";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useAddUser } from "../hooks/useAddUser";
+import { useNavigate } from "react-router-dom";
 
 
 function AddUser() {
    const { mutate, isPending, isError, isSuccess } = useAddUser();
-
+  const navigate = useNavigate();
  
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
@@ -24,6 +25,7 @@ function AddUser() {
             mutate(values, {
               onSuccess: () => {
                 resetForm();
+                 navigate('/admin/userlist');
               },
             });
           }}

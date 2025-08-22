@@ -5,15 +5,13 @@ export const useDeleteUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: deleteUser,  
+    mutationFn: deleteUser,
     onSuccess: (data) => {
       console.log("User deleted successfully:", data);
-      queryClient.invalidateQueries(["users"]); // refresh users list
-      return data;
+      queryClient.invalidateQueries(["users"]); 
     },
     onError: (error) => {
       console.error("Error deleting user:", error);
-      return error;
     }, 
   });
 };

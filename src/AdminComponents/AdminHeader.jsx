@@ -31,7 +31,7 @@ return(
         </li>
      
         <li>
-          <Link to="/addalbum">Add Album</Link>
+          <Link to="/admin/addalbum">Add Album</Link>
         </li>
         <li>
           <Link to="/albumlist">Album</Link>

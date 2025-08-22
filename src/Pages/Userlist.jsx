@@ -12,27 +12,28 @@ import Swal from "sweetalert2";
 function Userlist() {
   const { data: users, isLoading, isError } = useUsers();
   const { mutate, isPending: isEditPending, isError: isEditError } = useEditUser();
-  const { mutateAsync,isPending: isDeletePending, isError: isDeleteError } = useDeleteUser();
- const handleDelete = async (id) => {
-  console.log(id);
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "You won’t be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
-    });
+const { mutateAsync } = useDeleteUser();
 
-    if (result.isConfirmed) {
-      try {
-        await deleteUser.mutateAsync(id); 
-        Swal.fire("Deleted!", "User has been deleted.", "success");
-      } catch (error) {
-        Swal.fire("Error!", "Something went wrong.", "error");
-      }
+const handleDelete = async (id) => {
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "You won’t be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "Cancel",
+  });
+
+  if (result.isConfirmed) {
+    try {
+      await mutateAsync({ id });  // 👈 send { id: 5 } in body
+      Swal.fire("Deleted!", "User has been deleted.", "success");
+    } catch (error) {
+      Swal.fire("Error!", "Something went wrong.", "error");
     }
-  };
+  }
+};
+
   const [openModal, setopenModal] = useState(false);
 
   console.log(users);

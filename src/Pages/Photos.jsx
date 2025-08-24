@@ -1,5 +1,5 @@
 import { data } from "react-router-dom";
-import { useUsers } from "../hooks/useUsers";
+import {usePhotos} from "../hooks/usePhotos";
 import { useEditUser } from "../hooks/useEdituser";
 import { useDeleteUser } from "../hooks/useDeleteUser";
 import { FaEdit } from "react-icons/fa";
@@ -10,15 +10,10 @@ import * as Yup from "yup";
 import Button from "../AdminComponents/Button";
 import Swal from "sweetalert2";
 
-function Userlist() {
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const { data: users, isLoading, isError } = useUsers(
-    {
-    page,
-    limit: 10,
-    search,
-  }
+function Photos() {
+  
+  const { data: photos, isLoading, isError } = usePhotos(
+    
   );
 
   const { mutate, isPending: isEditPending, isError: isEditError } = useEditUser();
@@ -45,13 +40,13 @@ const handleDelete = async (id) => {
 };
 
   const [openModal, setopenModal] = useState(false);
-console.log(users);
+console.log(photos);
     const validationSchema = Yup.object({
       name: Yup.string().required("Name is required"),
     });
   return (
     <>
-      <h1 style={{ color: "white" }}>Userlist</h1>
+      <h1 style={{ color: "white" }}>Photos</h1>
 
       <table
         border="2"
@@ -69,7 +64,10 @@ console.log(users);
         <thead>
           <tr >
             <th>Id</th>
-            <th>Name</th>
+            <th>Caption</th>
+            <th>Image</th>
+            <th>Album</th>
+            <th>User</th>
             <th>Edit</th>
             <th>Delete</th>
           </tr>
@@ -77,13 +75,21 @@ console.log(users);
         <tbody   >
           {isLoading
             ? "Loading......."
-            : users?.users?.map((user) => (
+            : photos.photos?.map((photo) => (
                 <tr 
-                  key={user.id}
-                  style={{ border: "2px solid black", backgroundColor: "" }}
+                  key={photo.id}
+                  style={{ border: "2px solid black", backgroundColor: "" ,height:"2vh"}}
                 >
-                  <td>{user.id}</td>
-                  <td>{user.name}</td>
+                  <td>{photo.id}</td>
+                  <td>{photo.caption}</td>
+               <td>
+  <img src={`http://localhost:3000${photo.url}`} alt={photo.caption} />
+</td>
+
+                  <td>{photo.album.title}</td>
+                  <td>{photo.album.user.name}</td>
+                
+                  {/* <td>{photo.user.name}</td> */}
                   <td>
                     <FaEdit
                       style={{ color: "blue" }}
@@ -152,4 +158,4 @@ handleDelete(user.id)
   );
 }
 
-export default Userlist;
+export default Photos;

@@ -23,19 +23,57 @@ exports.createUser = async (req, res) => {
   }
 };
 
-// Get all users
+
 exports.getUsers = async (req, res) => {
   try {
-    const users = await prisma.user.findMany();
+    // Get query params
+    const { page = 1, limit = 10, search = "" } = req.query;
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const take = parseInt(limit);
+
+    // Search condition
+    const where = search
+      ? {
+          OR: [
+            { name: { contains: search  } },
+            
+          ],
+        }
+      : {};
+
+    // Fetch paginated users
+    const users = await prisma.user.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { id: "desc" },
+    });
+
+    // Fetch total count
+    const total = await prisma.user.count({ where });
+
     res.status(200).json({
       msg: "Users Fetched Successfully",
       error: false,
-      user: users,
+      users: users,
+      pagination: {
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPages: Math.ceil(total / limit),
+      },
     });
   } catch (err) {
-    res.status(500).json({ error: err.msg,error:true });
+    // res.status(500).json({ error: err.message, error: true });
+    res.status(500).json({ 
+  error: true, 
+  message: err.message ,
+  stack: err.stack 
+});
   }
 };
+
 
 // Update a user by ID (name only)
 exports.updateUser = async (req, res) => {

@@ -1,8 +1,13 @@
 import axios from "axios";
 
-export const fetchUsers = async () => {
 
-  const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/allusers`);
+
+export const fetchUsers = async (page = 1, limit = 10, search = "") => {
+  console.log('searchapi',search);
+  const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/allusers`, {
+    params: { page, limit, search },
+  });
+  // console.log('data',data);
   return data;
 };
 
@@ -20,5 +25,38 @@ export const deleteUser = async (payload) => {
   const { data } = await axios.delete(`${import.meta.env.VITE_API_URL}/deleteuser`, {
     data: payload,
   });
+  return data;
+};
+
+
+export const addAlbum=async(newAlbum)=>{
+  const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/createalbum`, newAlbum);
+  return data;
+}
+
+
+
+export const fetchAlbums = async () => {
+
+  const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/allalbums`,
+    
+);
+  // console.log('data',data);
+  return data;
+};
+
+
+export const addPhoto=async(newPhoto)=>{
+  const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/photos`, newPhoto,);
+  return data;
+}
+
+
+export const fetchPhotos = async () => {
+
+  const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/allphotos`,
+    
+);
+  // console.log('data',data);
   return data;
 };

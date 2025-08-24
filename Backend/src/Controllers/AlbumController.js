@@ -24,7 +24,7 @@ exports.createAlbum = async (req, res) => {
     const album = await prisma.album.create({
       data: {
         title,
-        user: { connect: { id: parseInt(user_id) } }, // ✅ Connect relation
+        user: { connect: { id: parseInt(user_id) } }, 
       },
     });
 

@@ -5,43 +5,49 @@ import * as Yup from "yup";
 
 import { useNavigate } from "react-router-dom";
 import AsyncSelect from "react-select/async";
-import { useUsers } from "../hooks/useUsers";
+import { useAlbums } from "../hooks/useAlbums";
 
-import { fetchUsers } from "../api/userApi";
-import { useAddAlbum } from "../hooks/useAddAlbum";
-function AddAlbum() {
-  const { mutate, isPending, isError, isSuccess } = useAddAlbum();
+import { fetchAlbums} from "../api/userApi";
+import { useAddPhoto } from "../hooks/useAddPhoto";
+function AddPhoto() {
+  const { mutate, isPending, isError, isSuccess } = useAddPhoto();
   const navigate = useNavigate();
-  const { data: users } = useUsers({
-    page: 1,
-    limit: 10,
-    search: "",
-  });
+  const { data: albums } = useAlbums(
+
+);
 
   const validationSchema = Yup.object({
     
-    title: Yup.string().required("Album name is required"),
+    caption: Yup.string().required("Caption is required"),
     // user_id: Yup.number().required("User is required"),
-    user_id: Yup.mixed()
+    album_id: Yup.mixed()
     // .required("User is required") // ensures some value is selected
     .test(
       "is-number",
       "Invalid user selected",
       (value) => value && typeof value.value === "number"
     ),
+     photo: Yup.mixed()
+    .required("A photo is required")
+    .test("fileType", "Only JPG/PNG allowed", (value) => {
+      return value && ["image/jpeg", "image/png"].includes(value.type);
+    })
+    .test("fileSize", "File must be less than 2MB", (value) => {
+      return value && value.size <= 2 * 1024 * 1024;
+    }),
     
   });
  
   // console.log(users.users);
   const defaultOptions = () => {
-    return users?.users?.map((u) => ({ value: u.id, label: u.name })) || [];
+    return albums?.albums?.map((u) => ({ value: u.id, label: u.title })) || [];
     // console.log(defaultOptions);
   };
 
   const loadOptions = async (inputValue) => {
-    const { users } = await fetchUsers(1, 10, inputValue);
+    const { albums } = await fetchAlbums();
     // console.log(users);
-    const options = users?.map((u) => ({ value: u.id, label: u.name })) || [];
+    const options = albums?.map((u) => ({ value: u.id, label: u.title })) || [];
     console.log(options);
 
     return [{ value: inputValue }, ...options];
@@ -61,19 +67,19 @@ function AddAlbum() {
         }}
       >
         <Formik
-          initialValues={{ title: "", user_id: null }}
+          initialValues={{ caption: "", album_id: null,photo:null }}
           
           validationSchema={validationSchema}
           onSubmit={(values, { resetForm }) => {
             console.log(values);
-            const payload = {
-      ...values,
-      user_id: values.user_id.value, 
-    };
-            mutate(payload, {
+const formData = new FormData();
+formData.append("caption", values.caption);
+formData.append("album_id", values.album_id.value);
+formData.append("photo", values.photo); 
+            mutate(formData, {
               onSuccess: () => {
                 resetForm();
-                navigate("/admin/albumlist");
+                navigate("/admin/photos");
               },
             });
           }}
@@ -92,38 +98,55 @@ function AddAlbum() {
               }}
             >
               <Field
-                name="title"
+                name="caption"
                 type="text"
                 style={{ width: "29vw" }}
-                placeholder="Name"
+                placeholder="Caption"
               />
               <ErrorMessage
-                name="title"
+                name="caption"
+                component="div"
+                style={{ color: "red" }}
+              />
+              <input
+          
+                name="photo"
+                type="file"
+                onChange={(event)=>{
+ setFieldValue("photo", event.currentTarget.files[0])
+                }}
+                style={{ width: "29vw" }}
+                placeholder="Photo"
+              />
+              <ErrorMessage
+                name="photo"
                 component="div"
                 style={{ color: "red" }}
               />
 
               <AsyncSelect
-                name="user_id"
+                name="album_id"
                
                 loadOptions={loadOptions}
                 defaultOptions={defaultOptions()}
-                placeholder="Search Users..."
-                onChange={(selectedOption) => setFieldValue("user_id", selectedOption)
+                placeholder="Search Albums..."
+                onChange={(selectedOption) => 
+                  setFieldValue("album_id", selectedOption)
+                  
                 
                 
                 }
-                value={values.user_id}
+                value={values.album_id}
                 styles={{ container: (base) => ({ ...base, width: "30vw" }) }}
               />
 
-              <Button
-                text={isPending ? "Adding..." : "Add Album"}
+              <Button type="submit"
+                text={isPending ? "Adding..." : "Add Photo"}
                 color="orange"
               />
 
               <ErrorMessage
-                name="user_id"
+                name="album_id"
                 component="div"
                 style={{ color: "red" }}
               />
@@ -137,4 +160,4 @@ function AddAlbum() {
   );
 }
 
-export default AddAlbum;
+export default AddPhoto;

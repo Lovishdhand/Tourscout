@@ -3,32 +3,37 @@ const prisma = require("../Models/prisma");
 
 
 // Create a photo
+
 exports.createPhoto = async (req, res) => {
   try {
-    const { album_id, url, thumbnail, caption } = req.body;
+    const { album_id, caption } = req.body;
 
-    if (!album_id || !url || !thumbnail) {
+    if (!album_id || !req.file) {
       return res
         .status(400)
-        .json({ msg: "albumId, url and thumbnail are required", error: true });
+        .json({ msg: "albumId and photo file are required", error: true });
     }
 
-    // Validate album exists
-    const album = await prisma.album.findUnique({ where: { id: parseInt(album_id) } });
+    const album = await prisma.album.findUnique({
+      where: { id: parseInt(album_id) },
+    });
     if (!album) {
       return res.status(400).json({ msg: "Album not found", error: true });
     }
 
+    const photoUrl = `/uploads/photos/${req.file.filename}`;
+    const thumbnailUrl = photoUrl;
+
     const photo = await prisma.photo.create({
       data: {
         album: { connect: { id: parseInt(album_id) } },
-        url,
-        thumbnail,
+        url: photoUrl,
+        thumbnail: thumbnailUrl,
         caption,
       },
     });
 
-    res.status(201).json({ msg: "Photo created successfully", error: false, photo });
+    res.status(201).json({ msg: "Photo uploaded successfully", error: false, photo });
   } catch (err) {
     res.status(500).json({ msg: err.message, error: true });
   }
@@ -37,10 +42,16 @@ exports.createPhoto = async (req, res) => {
 // Get all photos of an album
 exports.getPhotosByAlbum = async (req, res) => {
   try {
-    const { albumId } = req.params;
+ 
 
     const photos = await prisma.photo.findMany({
-      where: { albumId: parseInt(album_id) },
+      include: {
+        album: {
+          include: {
+            user: true, 
+          },
+        },
+      },
     });
 
     res.status(200).json({ msg: "Photos retrieved", error: false, photos });

@@ -5,6 +5,9 @@ import Admin from "./Pages/Admin";
 import AddUser from "./Pages/AddUser";
 import Userlist from "./Pages/Userlist";
 import AddAlbum from "./Pages/AddAlbum";
+import Albumlist from "./Pages/Albumlist";
+import AddPhoto from "./Pages/AddPhoto";
+import Photos from "./Pages/Photos";
 
 
 function AppRoutes() {
@@ -16,6 +19,9 @@ function AppRoutes() {
         <Route path="adduser" element={<AddUser />} />
         <Route path="addalbum" element={<AddAlbum />} />
         <Route path="userlist" element={<Userlist />} />
+        <Route path="albumlist" element={<Albumlist />} />
+        <Route path="addphoto" element={<AddPhoto />}/>
+        <Route path="photos" element={<Photos />}/>
       </Route>
     </Routes>
   );

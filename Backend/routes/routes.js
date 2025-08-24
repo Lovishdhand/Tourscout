@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const upload = require("../middleware/multerConfig");
 const userController = require('../src/Controllers/UserController');
 const albumController = require('../src/Controllers/AlbumController');
+const photoController = require('../src/Controllers/PhotoController'); 
 
 
 router.get('/users', (req, res) => {
@@ -43,5 +45,6 @@ router.put('/editalbum', albumController.updateAlbum);
 
 // Delete album
 router.delete('/deletealbum', albumController.deleteAlbum); 
-
+router.post("/photos", upload.single("photo"), photoController.createPhoto);
+router.get("/allphotos",photoController.getPhotosByAlbum)
 module.exports = router;

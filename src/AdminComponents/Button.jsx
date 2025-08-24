@@ -1,10 +1,10 @@
 
 
-function Button({text,color}){
+function Button({text,color,type}){
 
     return(
 <>
- <button style={{backgroundColor:color,height:"25px",cursor:"pointer"}}>
+ <button type={{type}} style={{backgroundColor:color,height:"25px",cursor:"pointer"}}>
 {text}
     </button>
 </>

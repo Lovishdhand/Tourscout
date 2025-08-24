@@ -17,7 +17,7 @@ return(
  <img src="/images/ontourlogo (1).svg" alt="Tour Scout Logo" height={"50vh"}/>
 
 </div>
-<nav style={{backgroundColor:"orange",width:"80%",}}>
+<nav style={{backgroundColor:"orange",width:"90%",}}>
       <ul style={{display:"flex",listStyle: "none",justifyContent:"space-evenly",textDecoration:"none"}}>
         <li>
           <Link to="/admin/dashboard">Home</Link>
@@ -34,10 +34,13 @@ return(
           <Link to="/admin/addalbum">Add Album</Link>
         </li>
         <li>
-          <Link to="/albumlist">Album</Link>
+          <Link to="/admin/albumlist">Album</Link>
         </li>
         <li>
-          <Link to="/addphotos">Add Photos</Link>
+          <Link to="/admin/addphoto">Add Photos</Link>
+        </li>
+        <li>
+          <Link to="/admin/photos">Photos</Link>
         </li>
       </ul>
     </nav>

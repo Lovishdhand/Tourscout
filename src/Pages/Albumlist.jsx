@@ -9,9 +9,15 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Button from "../AdminComponents/Button";
 import Swal from "sweetalert2";
+import DialogBox from "../AdminComponents/DialogBox";
 
 function Albumlist() {
-  
+  const[dialogMessage , setDialogMessage]=useState("");
+  const [action,setAction]=useState({
+    action:"",
+    fields:[],
+select:false
+  });
   const { data: albums, isLoading, isError } = useAlbums(
     
   );
@@ -46,14 +52,14 @@ console.log(data.albums);
     });
   return (
     <>
-      <h1 style={{ color: "white" }}>Albumlist</h1>
+      {/* <h1 style={{ color: "white" }}>Albumlist</h1> */}
 
       <table
         border="2"
         style={{
           backgroundColor: "white",
-          height: "50vh",
-          width: "88vw",
+          height: "10vh",
+          width: "58vw",
           borderCollapse: "collapse",
           cursor: "pointer",
          
@@ -86,14 +92,18 @@ console.log(data.albums);
                       style={{ color: "blue" }}
                       onClick={() => {
                         setopenModal(!openModal);
-             
+             setDialogMessage("Are you sure you want to edit?");
+             setAction({action:"Edit",fields:1,select:true});
                       }}
                     />
                   </td>
                   <td>
                     <MdDelete style={{ color: "red" }}
                     onClick={()=>{
-handleDelete(user.id)
+                      setopenModal(!openModal);
+                         setDialogMessage("Are you sure you want to delete?");
+                         setAction({action:"Delete",fields:0,select:false});
+handleDelete(album.id)
                     }}
                     
                     />
@@ -102,7 +112,7 @@ handleDelete(user.id)
               ))}
         </tbody>
       </table>
-
+{/* 
       {openModal && (
         <div
           style={{ backgroundColor: "rgba(0,0,0,0.8)", height: "30vh", width: "30vw", position:"absolute",right:"40%",bottom:"40%",zIndex:9999}}
@@ -144,7 +154,14 @@ handleDelete(user.id)
       </div>
 
         </div>
-      )}
+      )} */}
+          {openModal && (
+  <DialogBox
+    message={dialogMessage}dialogaction={action.action} fields={action.fields}select={action.select}
+   
+  />
+)}
+
     </>
   );
 }

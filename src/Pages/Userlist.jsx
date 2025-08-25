@@ -13,6 +13,7 @@ import Swal from "sweetalert2";
 function Userlist() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+    const [editUser, setEditUser] = useState(null);
   const { data: users, isLoading, isError } = useUsers(
     {
     page,
@@ -21,7 +22,7 @@ function Userlist() {
   }
   );
 
-  const { mutate, isPending: isEditPending, isError: isEditError } = useEditUser();
+  const { mutate, isPending: isEditPending, isError: isEditError ,isSuccess} = useEditUser();
 const { mutateAsync } = useDeleteUser();
 
 const handleDelete = async (id) => {
@@ -88,6 +89,7 @@ console.log(users);
                     <FaEdit
                       style={{ color: "blue" }}
                       onClick={() => {
+                        setEditUser(user);
                         setopenModal(!openModal);
              
                       }}

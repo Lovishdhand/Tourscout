@@ -2,13 +2,15 @@ import React from "react";
 import Button from "../AdminComponents/Button";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-
+import Albumlist from "./Albumlist";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AsyncSelect from "react-select/async";
 import { useUsers } from "../hooks/useUsers";
 
 import { fetchUsers } from "../api/userApi";
 import { useAddAlbum } from "../hooks/useAddAlbum";
+
 function AddAlbum() {
   const { mutate, isPending, isError, isSuccess } = useAddAlbum();
   const navigate = useNavigate();
@@ -17,7 +19,7 @@ function AddAlbum() {
     limit: 10,
     search: "",
   });
-
+  const [openModal, setopenModal] = useState(false);
   const validationSchema = Yup.object({
     
     title: Yup.string().required("Album name is required"),
@@ -55,8 +57,8 @@ function AddAlbum() {
           backgroundColor: "red",
           height: "60vh",
           display: "flex",
-
-          justifyContent: "center",
+flexDirection:"column",
+          justifyContent:"space-evenly",
           alignItems: "center",
         }}
       >
@@ -73,7 +75,7 @@ function AddAlbum() {
             mutate(payload, {
               onSuccess: () => {
                 resetForm();
-                navigate("/admin/albumlist");
+                // navigate("/admin/albumlist");
               },
             });
           }}
@@ -132,6 +134,8 @@ function AddAlbum() {
             </Form>
           )}
         </Formik>
+        <Albumlist/>
+  
       </div>
     </>
   );

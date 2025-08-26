@@ -40,21 +40,91 @@ exports.createPhoto = async (req, res) => {
 };
 
 // Get all photos of an album
-exports.getPhotosByAlbum = async (req, res) => {
-  try {
+// exports.getPhotosByAlbum = async (req, res) => {
+//   try {
  
 
-    const photos = await prisma.photo.findMany({
-      include: {
-        album: {
-          include: {
-            user: true, 
+//     const photos = await prisma.photo.findMany({
+//       include: {
+//         album: {
+//           include: {
+//             user: true, 
+//           },
+//         },
+//       },
+//     });
+
+//     res.status(200).json({ msg: "Photos retrieved", error: false, photos });
+//   } catch (err) {
+//     res.status(500).json({ msg: err.message, error: true });
+//   }
+// };
+exports.getPhotosByAlbum = async (req, res) => {
+  try {
+    const { 
+      page = 1, 
+      limit = 10, 
+      search = "", 
+      userId=null, 
+      albumId =null
+    } = req.query;
+
+    const skip = (page - 1) * limit;
+    const take = parseInt(limit);
+
+    const where = {
+      AND: [
+     
+        search
+          ? {
+              OR: [
+                { caption: { contains: search, mode: "insensitive" } },
+                { album: { title: { contains: search, mode: "insensitive" } } },
+                { album: { user: { name: { contains: search, mode: "insensitive" } } } },
+                { album: { user: { designation: { contains: search, mode: "insensitive" } } } },
+                { album: { user: { description: { contains: search, mode: "insensitive" } } } },
+                {
+                  album: { user: { age: { equals: !isNaN(Number(search)) ? Number(search) : undefined } } }
+                },
+              ],
+            }
+          : {},
+
+     
+        userId ? { album: { userId: Number(userId) } } : {},
+
+        
+        albumId ? { albumId: Number(albumId) } : {},
+      ],
+    };
+
+    const [photos, total] = await Promise.all([
+      prisma.photo.findMany({
+        where,
+        skip,
+        take,
+        include: {
+          album: {
+            include: {
+              user: true,
+            },
           },
         },
+      }),
+      prisma.photo.count({ where }),
+    ]);
+
+    res.status(200).json({
+      msg: "Photos retrieved",
+      error: false,
+      photos,
+      pagination: {
+        total,
+        page: Number(page),
+        limit: Number(limit),
+        totalPages: Math.ceil(total / limit),
       },
     });
-
-    res.status(200).json({ msg: "Photos retrieved", error: false, photos });
   } catch (err) {
     res.status(500).json({ msg: err.message, error: true });
   }

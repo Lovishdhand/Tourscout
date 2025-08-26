@@ -3,14 +3,14 @@ const prisma = require("../Models/prisma");
 // Create a new user (name only)
 exports.createUser = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name ,designation,description,age} = req.body;
 
     if (!name) {
       return res.status(400).json({ error: true,msg:"Name is required" });
     }
 
     const newUser = await prisma.user.create({
-      data: { name },
+      data: { name,designation,description,age },
     });
 
     res.status(201).json({

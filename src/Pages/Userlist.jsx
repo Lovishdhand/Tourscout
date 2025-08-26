@@ -71,6 +71,9 @@ console.log(users);
           <tr >
             <th>Id</th>
             <th>Name</th>
+            <th>Designation</th>
+            <th>Description</th>
+            <th>Age</th>
             <th>Edit</th>
             <th>Delete</th>
           </tr>
@@ -85,6 +88,9 @@ console.log(users);
                 >
                   <td>{user.id}</td>
                   <td>{user.name}</td>
+                  <td>{user.designation}</td>
+                  <td>{user.description}</td>
+                  <td>{user.age}</td>
                   <td>
                     <FaEdit
                       style={{ color: "blue" }}

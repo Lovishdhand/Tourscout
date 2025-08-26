@@ -52,9 +52,11 @@ export const addPhoto=async(newPhoto)=>{
 }
 
 
-export const fetchPhotos = async () => {
+export const fetchPhotos = async (page = 1, limit = 10, search = "", userId=null,albumId=null) => {
 
-  const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/allphotos`,
+  const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/allphotos`, {
+    params: { page, limit, search,userId,albumId },
+  },
     
 );
   // console.log('data',data);

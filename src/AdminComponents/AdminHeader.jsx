@@ -42,6 +42,9 @@ return(
         <li>
           <Link to="/admin/photos">Photos</Link>
         </li>
+        <li>
+          <Link to="/admin/search">Search Photos</Link>
+        </li>
       </ul>
     </nav>
 <div style={{backgroundColor:"",height:"10vh",width:"78vw"}}>

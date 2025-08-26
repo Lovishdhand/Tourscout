@@ -8,6 +8,7 @@ import AddAlbum from "./Pages/AddAlbum";
 import Albumlist from "./Pages/Albumlist";
 import AddPhoto from "./Pages/AddPhoto";
 import Photos from "./Pages/Photos";
+import Search from "./Pages/Search";
 
 
 function AppRoutes() {
@@ -22,6 +23,7 @@ function AppRoutes() {
         <Route path="albumlist" element={<Albumlist />} />
         <Route path="addphoto" element={<AddPhoto />}/>
         <Route path="photos" element={<Photos />}/>
+        <Route path="search" element={<Search/>}/>
       </Route>
     </Routes>
   );

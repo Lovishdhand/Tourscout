@@ -10,6 +10,7 @@ import { useAlbums } from "../hooks/useAlbums";
 import { fetchAlbums} from "../api/userApi";
 import { useAddPhoto } from "../hooks/useAddPhoto";
 function AddPhoto() {
+
   const { mutate, isPending, isError, isSuccess } = useAddPhoto();
   const navigate = useNavigate();
   const { data: albums } = useAlbums(

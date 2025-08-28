@@ -59,60 +59,153 @@ exports.createPhoto = async (req, res) => {
 //     res.status(500).json({ msg: err.message, error: true });
 //   }
 // };
-exports.getPhotosByAlbum = async (req, res) => {
-  try {
-    const { 
-      page = 1, 
-      limit = 10, 
-      search = "", 
-      userId=null, 
-      albumId =null
-    } = req.query;
+// exports.getPhotosByAlbum = async (req, res) => {
+//   try {
+//     const { 
+//       page = 1, 
+//       limit = 10, 
+//       search = "", 
+//       userId=null, 
+//       albumId =null
+//     } = req.query;
 
-    const skip = (page - 1) * limit;
-    const take = parseInt(limit);
+//     const skip = (page - 1) * limit;
+//     const take = parseInt(limit);
 
-    const where = {
-      AND: [
+//     // const where = {
+//     //   AND: [
      
-        search
-          ? {
-              OR: [
-                { caption: { contains: search, mode: "insensitive" } },
-                { album: { title: { contains: search, mode: "insensitive" } } },
-                { album: { user: { name: { contains: search, mode: "insensitive" } } } },
-                { album: { user: { designation: { contains: search, mode: "insensitive" } } } },
-                { album: { user: { description: { contains: search, mode: "insensitive" } } } },
-                {
-                  album: { user: { age: { equals: !isNaN(Number(search)) ? Number(search) : undefined } } }
-                },
-              ],
-            }
-          : {},
+//     //     search
+//     //       ? {
+//     //           OR: [
+//     //             { caption: { contains: search, mode: "insensitive" } },
+//     //             { album: { title: { contains: search, mode: "insensitive" } } },
+//     //             { album: { user: { name: { contains: search, mode: "insensitive" } } } },
+//     //             { album: { user: { designation: { contains: search, mode: "insensitive" } } } },
+//     //             { album: { user: { description: { contains: search, mode: "insensitive" } } } },
+//     //             {
+//     //               album: { user: { age: { equals: !isNaN(Number(search)) ? Number(search) : undefined } } }
+//     //             },
+//     //           ],
+//     //         }
+//     //       : {},
 
      
-        userId ? { album: { userId: Number(userId) } } : {},
+//     //     userId ? { album: { userId: Number(userId) } } : {},
 
         
-        albumId ? { albumId: Number(albumId) } : {},
+//     //     albumId ? { albumId: Number(albumId) } : {},
+//     //   ],
+//     // };
+// const where = {
+//   AND: [
+//     search
+//       ? {
+//           OR: [
+//             { caption: { contains: search, mode: "insensitive" } },
+//             { album: { is: { title: { contains: search, mode: "insensitive" } } } },
+//             { album: { is: { user: { is: { name: { contains: search, mode: "insensitive" } } } } } },
+//             { album: { is: { user: { is: { designation: { contains: search, mode: "insensitive" } } } } } },
+//             { album: { is: { user: { is: { description: { contains: search, mode: "insensitive" } } } } } },
+//             {
+//               album: {
+//                 is: {
+//                   user: {
+//                     is: {
+//                       age: {
+//                         equals: !isNaN(Number(search)) ? Number(search) : undefined,
+//                       },
+//                     },
+//                   },
+//                 },
+//               },
+//             },
+//           ],
+//         }
+//       : {},
+
+//     // ✅ Fix here: must wrap with `is`
+//     userId ? { album: { is: { user_id: Number(userId) } } } : {},
+
+//     // ✅ albumId is a direct field on `photo`, so this is fine
+//     albumId ? { albumId: Number(albumId) } : {},
+//   ],
+// };
+
+//     const [photos, total] = await Promise.all([
+//       prisma.photo.findMany({
+//         where,
+//         skip,
+//         take,
+//         include: {
+//           album: {
+//             include: {
+//               user: true,
+//             },
+//           },
+//         },
+//       }),
+//       prisma.photo.count({ where }),
+//     ]);
+
+//     res.status(200).json({
+//       msg: "Photos retrieved",
+//       error: false,
+//       photos,
+//       pagination: {
+//         total,
+//         page: Number(page),
+//         limit: Number(limit),
+//         totalPages: Math.ceil(total / limit),
+//       },
+//     });
+//   } catch (err) {
+//     res.status(500).json({ msg: err.message, error: true });
+//   }
+// };
+
+
+
+
+
+
+// 📂 PhotoController.js
+exports.getPhotosByAlbum = async (req, res) => {
+  try {
+    let { search, user_id, album_id, page, limit} = req.query;
+page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+    
+    const where = {
+      AND: [
+        search
+          ? { caption: { contains: search, mode: "insensitive" } }
+          : {},
+
+        user_id
+          ? { album: { is: { user_id: Number(user_id) } } }
+          : {},
+
+        album_id
+          ? { album_id: Number(album_id) }
+          : {},
       ],
     };
 
-    const [photos, total] = await Promise.all([
-      prisma.photo.findMany({
-        where,
-        skip,
-        take,
-        include: {
-          album: {
-            include: {
-              user: true,
-            },
-          },
+    // ✅ Fetch paginated photos
+    const photos = await prisma.photo.findMany({
+      where,
+      include: {
+        album: {
+          include: { user: true },
         },
-      }),
-      prisma.photo.count({ where }),
-    ]);
+      },
+      skip: (page - 1) * limit,
+      take: Number(limit),
+    });
+
+    // ✅ Count total matching records
+    const total = await prisma.photo.count({ where });
 
     res.status(200).json({
       msg: "Photos retrieved",
@@ -129,6 +222,11 @@ exports.getPhotosByAlbum = async (req, res) => {
     res.status(500).json({ msg: err.message, error: true });
   }
 };
+
+
+
+
+
 
 // Update a photo
 exports.updatePhoto = async (req, res) => {

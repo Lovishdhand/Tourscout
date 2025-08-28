@@ -11,9 +11,15 @@ import Button from "../AdminComponents/Button";
 import Swal from "sweetalert2";
 
 function Photos() {
-  
+  const [filters, setFilters] = useState({
+    page: 1,
+    limit: 2,
+    search: "",
+    albumId: null,
+    userId: null,
+  });
   const { data: photos, isLoading, isError } = usePhotos(
-    
+    filters
   );
 
   const { mutate, isPending: isEditPending, isError: isEditError } = useEditUser();

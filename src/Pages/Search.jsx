@@ -13,7 +13,7 @@ function Search() {
     isError,
   } = usePhotos({
     page: 1,
-    limit: 10,
+    limit: 2,
     search: "",
     userId: userId,
     albumId: albumId,

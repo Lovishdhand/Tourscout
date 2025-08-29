@@ -19,7 +19,7 @@ function Admin(){
     //    console.log('users',users?.users?.length);
        const totalUsers = users?.users?.length || 0;
        const totalalbums = albums?.albums?.length || 0;
-       const totalPhotos = photos?.photos?.length || 0;
+      const totalPhotos = photos?.pagination?.total || 0;
  return (
  <>
  

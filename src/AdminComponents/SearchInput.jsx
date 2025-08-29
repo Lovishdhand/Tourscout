@@ -5,24 +5,39 @@ import * as Yup from "yup";
 import AsyncSelect from "react-select/async";
 import Button from "../AdminComponents/Button";
 import { usePhotos } from "../hooks/usePhotos";
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import Pagination from "../AdminComponents/Pagination";
 
 function SearchInput() {
-  const [searchFilter,setsearchfilter]=useState({
-    page:1,
-    limit:2,
-    search:"",
-    album_id:null,
-    user_id:null
-  });
+const [searchParams, setSearchParams] = useSearchParams();
+const searchFilter = {
+  page: Number(searchParams.get("page")) || 1,
+  limit: Number(searchParams.get("limit")) || 10,
+  search: searchParams.get("search") || "",
+  album_id: searchParams.get("album_id") || null,
+  user_id: searchParams.get("user_id") || null,
+};
+
+  const [totalPages, setTotalPages] = useState(0);
+
   const { data: photos, isLoading, isError } = usePhotos(searchFilter);
   const validationSchema = Yup.object({});
+//   console.log("Dv",photos?.pagination?.totalPages);
 
+// setTotalPages(photos.totalPages);
   const defaultUserOptions = () => {
     return users?.users?.map((u) => ({ value: u.id, label: u.name })) || [];
     // console.log(defaultOptions);
   };
 
+  useEffect(() => {
+    console.log("deee",photos);
+    if (photos?.pagination?.totalPages) {
+      setTotalPages(photos.pagination.totalPages);
+      console.log(totalPages);
+    }
+  }, [photos]);
   const loadUserOptions = async (inputValue) => {
     const { users } = await fetchUsers(1, 10, inputValue);
     // console.log(users);
@@ -53,17 +68,28 @@ function SearchInput() {
   };
   return (
     <>
+    
       <Formik
        initialValues={{
-    search: "",    
-    albumId: null,  
-    userId: null    
+    search: searchParams.get("search") || "",
+    album_id: searchParams.get("album_id") || null,
+    user_id: searchParams.get("user_id") || null,
   }}
         validationSchema={validationSchema}
         onSubmit={(values, { resetForm }) => {
           console.log(values);
           // alert(values.album_id.value);
-          setsearchfilter({...searchFilter,search:values.search,album_id:values.album_id.value,user_id:values.user_id.value})
+          // setSearch({...searchFilter,search:values.search,album_id:values.album_id.value,user_id:values.user_id.value})
+           const newParams = {
+      page: "1", // reset page on new search
+      limit: "2", // you can also read from a default or state
+      search: values.search,
+      album_id: values.album_id?.value || "",
+      user_id: values.user_id?.value || "",
+    };
+
+    // Update the URL params
+    setSearchParams(newParams);
           // alert(searchFilter.albumId);
         }}
       >
@@ -126,6 +152,8 @@ function SearchInput() {
           </Form>
         )}
       </Formik>
+<Pagination totalPages={totalPages }/>
+      
     </>
   );
 }

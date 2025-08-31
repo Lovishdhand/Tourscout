@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchPhotos } from "../api/userApi";
 
-export const usePhotos = (searchFilter) => {
-  console.log("dff", searchFilter);
+export const usePhotos = (filters) => {
+  console.log("dff", filters);
   return useQuery({
-    queryKey: ["photos", searchFilter],
-    queryFn: () => fetchPhotos(searchFilter),
+    queryKey: ["photos", filters],
+    queryFn: () => fetchPhotos(filters),
     staleTime: 1000 * 60,
   });
 };

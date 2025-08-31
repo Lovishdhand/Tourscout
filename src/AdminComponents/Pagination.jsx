@@ -1,19 +1,24 @@
 import { useSearchParams } from "react-router-dom";
 
+import { SearchContext } from "../Pages/Search";
+import { useContext } from "react";
+
 function Pagination({ totalPages }) {
-    console.log(totalPages);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const currentPage = Number(searchParams.get("page")) || 1;
+  const { filters, setFilters } = useContext(SearchContext);
+
 
   return (
     <div>
-      {Array.from({ length: totalPages }, (_, i) => (
+      {Array.from({ length: totalPages }, (x, i) => (
         <button
           key={i + 1}
-          onClick={() => setSearchParams({ page: i + 1 })}
+          onClick={() => 
+   setFilters({...filters,page:i+1})
+         
+          }
           style={{
             margin: "4px",
-            fontWeight: currentPage === i + 1 ? "bold" : "normal",
+            fontWeight: filters.page === i + 1 ? "bold" : "normal",
           }}
         >
           {i + 1}

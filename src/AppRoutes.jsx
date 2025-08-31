@@ -11,6 +11,7 @@ import Photos from "./Pages/Photos";
 import Search from "./Pages/Search";
 
 
+
 function AppRoutes() {
   return (
     <Routes>

@@ -52,10 +52,10 @@ export const addPhoto=async(newPhoto)=>{
 }
 
 
-export const fetchPhotos = async (searchFilter) => {
-console.log('photd',searchFilter);
+export const fetchPhotos = async (filters) => {
+// console.log('photd',searchFilter);
   const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/allphotos`, {
-    params: searchFilter,
+    params: filters
   },
     
 );
